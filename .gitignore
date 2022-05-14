@@ -1,0 +1,3 @@
+CertExpirationChecker/bin/**
+CertExpirationChecker/obj/**
+.vs/*
