@@ -9,6 +9,7 @@ Run `appcmd list sites` from your server, and place the output in a text file. S
 
 # Usage 
 `CertExpirationChecker.exe https://www.google.com`
+
 `CertExpirationChecker.exe -i inputfile.txt -o output.txt`
 
 Sample `inputfile.txt` 
