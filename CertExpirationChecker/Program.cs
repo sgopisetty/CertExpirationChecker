@@ -12,31 +12,54 @@ namespace CertExpirationChecker
     internal class Program
     {
         private static string pInputFile = String.Empty;
+        private static string singleUrl = string.Empty;
         static async Task Main(string[] args)
         {
             if (!ProcessArguments(args))
                 return;
 
-            var lines = File.ReadAllLines(pInputFile);
-            foreach (var line in lines)
+            await ProcessUrls();
+
+        }
+
+        private static async Task ProcessUrls()
+        {
+
+            string[] lines = null;
+            if (File.Exists(pInputFile))
             {
-                //skip commented lines 
-                if (line.StartsWith("#"))
-                    continue;
-
-                var quoteDelimiter = @"""";
-                string siteName = GetSiteName(line, quoteDelimiter);
-                var httpsBindings = GetHttpsBindings(line);
-
-                RemoteUrlInspector inspector = new RemoteUrlInspector();
-                foreach (var binding in httpsBindings)
+                lines = File.ReadAllLines(pInputFile);
+                foreach (var line in lines)
                 {
-                    if (binding == "https://")
+                    //skip commented lines 
+                    if (line.StartsWith("#"))
                         continue;
-                    await inspector.GetExpiration(siteName, binding);
+
+                    var quoteDelimiter = @"""";
+                    string siteName = GetSiteName(line, quoteDelimiter);
+                    var httpsBindings = GetHttpsBindings(line);
+
+                    foreach (var binding in httpsBindings)
+                    {
+                        if (binding == "https://")
+                            continue;
+                        await ProcessSingleSite(siteName, binding);
+                    }
                 }
             }
+            else if (!string.IsNullOrEmpty(singleUrl))
+            {
+                lines = new string[1];
+                lines[0] = singleUrl;
+                await ProcessSingleSite(lines[0], lines[0]);
+            }
 
+
+        }
+        private static async Task ProcessSingleSite(string siteName, string binding)
+        {
+            RemoteUrlInspector inspector = new RemoteUrlInspector();
+            await inspector.GetExpiration(siteName, binding);
         }
 
         private static List<string> GetHttpsBindings(string line)
@@ -55,6 +78,11 @@ namespace CertExpirationChecker
 
         private static bool ProcessArguments(string[] args)
         {
+            if (args.Length == 1 && args[0].StartsWith("http"))
+            {
+                singleUrl = args[0];
+                return true;
+            }
             if (args.Length != 4)
             {
                 Console.WriteLine("Usage:\nCertExpirationChecker.exe -i inputfile.txt -o outputfilename.txt");

@@ -28,5 +28,9 @@ namespace CertExpirationChecker
             }
             Console.WriteLine(str);
         }
+        public static void LogError(string str)
+        {
+            Console.WriteLine(str);
+        }
     }
 }

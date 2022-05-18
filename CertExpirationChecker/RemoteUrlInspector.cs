@@ -39,9 +39,10 @@ namespace WebsitesDashboard.Util
                 HttpClient cl = new HttpClient(handler);
                 var x = await cl.GetAsync(url);
             }
-            catch
+            catch (Exception ex)
             {
-
+                var msg = $"Exception parsing url {Url}. Exception details {ex.ToString()}";
+                Logger.LogError(msg);
             }
 
         }
@@ -63,7 +64,7 @@ namespace WebsitesDashboard.Util
                 }
             }
 
-            return arg2.NotAfter <= DateTime.Now && DateTime.Now <= arg2.NotAfter;
+            return arg2.NotBefore <= DateTime.Now && DateTime.Now <= arg2.NotAfter;
         }
     }
 }

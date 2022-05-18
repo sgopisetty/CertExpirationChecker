@@ -1,11 +1,14 @@
 # CertExpirationChecker
-Parses "appcmd list site" data and outputs SSL expiration
+- Adhoc report for a single url
+- Parses "appcmd list site" data and outputs SSL expiration
 
-# Prerequisites
+
+# Prerequisites for processing a source file
 Needs data in a source/input file. 
 Run `appcmd list sites` from your server, and place the output in a text file. Specify this file as the input (`-i`) parameter.
 
 # Usage 
+`CertExpirationChecker.exe https://www.google.com`
 `CertExpirationChecker.exe -i inputfile.txt -o output.txt`
 
 Sample `inputfile.txt` 
